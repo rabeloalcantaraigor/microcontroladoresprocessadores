@@ -23,8 +23,16 @@ int main(void)
 	return 0;
 }
 Para este código, responda: (a) A variável i é armazenada na memória RAM ou ROM? Por quê? (b) O programa compilado a partir deste código é armazenado na memória RAM ou ROM? Por quê?
+Resp:
+(a)Na memória RAM. Por que as variáveis são um espaço da memória que serve para amarmazenar dados por um tempo determinado.
+(b)Na memória RAM. Por que ao compilar o programa, os dados serão armazenados somente no momento em que o computador estiver desligado, se o computador perder energia e desligar, os dados automaticamente serão apagados.
 
 4. Quais são as diferenças, vantagens e desvantagens das arquiteturas Harvard e Von Neumann?
+Resp:
+Diferenças entre arquitetura Von Neumann e Harvard: A Harvard separa o armazenamento e o comportamento das instruções do CPU e os dados, enquanto a de Von Neumann utiliza o mesmo espaço de memória para ambos. Nos CPUs atuais, é mais comum encontrar a arquitetura Von Neumann, mas algumas coisas da arquitetura Harvard também são vistas.
+Vantagens e desvantagens: 
+Arquitetura do tipo Harvard: caminhos de dados e de instrução distintos, dessa forma, seus componentes internos têm a seguinte disposição.
+Arquitetura Von Neumann: é processada uma única informação por vez, visto que nessa tecnologia, execução de dados percorrem o mesmo barramento, o que torna o processo lento em relação a arquitetura Harvard.
 
 5. Considere a variável inteira i, armazenando o valor 0x8051ABCD. Se i é armazenada na memória a partir do endereço 0x0200, como ficam este byte e os seguintes, considerando que a memória é: (a) Little-endian; (b) Big-endian.
 
