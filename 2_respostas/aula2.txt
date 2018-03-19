@@ -1,4 +1,7 @@
 1. Quais as diferenças entre os barramentos de dados e de endereços?
+Resp:
+Barramento de dados: (Data bus) transmite dados entre as unidades. Um microprocessador de 8 bits requer um barramento de dados de 8 linhas para transmitir dados de 8 bits em paralelo. Um microprocessador de 64 bits requer um barramento de dados de 64 linhas para transmitir dados de 64 bits em paralelo. O barramento de dados é bidirecional, isto é, pode transmitir em ambas direções.
+Barramento de endereços: (Adress bus) é usado para selecionar a origem ou destino de sinais para transmitidos num dos outros barramentos ou numa de suas linhas. Conduz endereços. Uma função típica dos barramentos de endereços é selecionar um registrador num dos dispositivos do sistema que é usado como a fonte ou destino do dado.
 
 2. Quais são as diferenças entre as memórias RAM e ROM?
 
