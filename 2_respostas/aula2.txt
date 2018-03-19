@@ -4,6 +4,9 @@ Barramento de dados: (Data bus) transmite dados entre as unidades. Um microproce
 Barramento de endereços: (Adress bus) é usado para selecionar a origem ou destino de sinais para transmitidos num dos outros barramentos ou numa de suas linhas. Conduz endereços. Uma função típica dos barramentos de endereços é selecionar um registrador num dos dispositivos do sistema que é usado como a fonte ou destino do dado.
 
 2. Quais são as diferenças entre as memórias RAM e ROM?
+Resp:
+Memória RAM: (Random Acess Memory), pode ser acessada a qualquer momento pelo sistema operacional para carregar e sobreescrever informações com muita rapidez. É um tipo de memória volátil que serve para rodar aplicações depois que o dispositivo já está ligado, e cuja as informações são perdidas com a perda de energia.
+Memória ROM: (Realy Only Memory), memória somente de leitura e o lugar onde ficam informações básicas do dispositivo, portanto não perde a informações quando o dispositivo é desligado.
 
 3. Considere o código abaixo:
 
