@@ -46,7 +46,8 @@ A palavra 0x80 no endereço 0x0203.
 A palavra 0x80 no endereço 0x0200;
 A palavra 0x51 no endereço 0x0201;
 A palavra 0xAB no endereço 0x0202;
-A palavra 0xCD no endereço 0x0203;.
+A palavra 0xCD no endereço 0x0203.
+
 6. Sabendo que o processador do MSP430 tem registradores de 16 bits, como ele soma duas variáveis de 32 bits?
 Resp:
 Usando o tombamento(Carry).
