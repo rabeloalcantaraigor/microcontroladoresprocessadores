@@ -35,7 +35,18 @@ Arquitetura do tipo Harvard: caminhos de dados e de instrução distintos, dessa
 Arquitetura Von Neumann: é processada uma única informação por vez, visto que nessa tecnologia, execução de dados percorrem o mesmo barramento, o que torna o processo lento em relação a arquitetura Harvard.
 
 5. Considere a variável inteira i, armazenando o valor 0x8051ABCD. Se i é armazenada na memória a partir do endereço 0x0200, como ficam este byte e os seguintes, considerando que a memória é: (a) Little-endian; (b) Big-endian.
+Resp:
+(a)Little-endian:
+A palavra 0xCD no endereço 0x0200;
+A palavra 0xAB no endereço 0x0201;
+A palavra 0x51 no endereço 0x0202;
+A palavra 0x80 no endereço 0x0203.
 
+(b)Big-endian:
+A palavra 0x80 no endereço 0x0200;
+A palavra 0x51 no endereço 0x0201;
+A palavra 0xAB no endereço 0x0202;
+A palavra 0xCD no endereço 0x0203;.
 6. Sabendo que o processador do MSP430 tem registradores de 16 bits, como ele soma duas variáveis de 32 bits?
 Resp:
 Usando o tombamento(Carry).
