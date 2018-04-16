@@ -1,4 +1,52 @@
-1. Dada uma variável a do tipo char (um byte), escreva os trechos de código em C para: (a) Somente setar o bit menos significativo de a. (b) Somente setar dois bits de a: o menos significativo e o segundo menos significativo. (c) Somente zerar o terceiro bit menos significativo de a. (d) Somente zerar o terceiro e o quarto bits menos significativo de a. (e) Somente inverter o bit mais significativo de a. (f) Inverter o nibble mais significativo de a, e setar o nibble menos significativo de a.
+1. Dada uma variável a do tipo char (um byte), escreva os trechos de código em C para: 
+(a) Somente setar o bit menos significativo de a. 
+Resp: 
+int main(void)
+int a, saida;
+{
+	saida <= a || "00000001";
+	return 0;
+}
+
+(b) Somente setar dois bits de a: o menos significativo e o segundo menos significativo.
+Resp:
+int main(void)
+{
+	int saida,a;
+  saida <= a || "00000011";
+}
+(c) Somente zerar o terceiro bit menos significativo de a. 
+Resp:
+int main(void)
+{
+int saida,a;
+saida <= a && "00000100";
+}
+
+(d) Somente zerar o terceiro e o quarto bits menos significativo de a. 
+Resp:
+int main(void)
+{
+int saida,a;
+saida <= a && "00000101";
+}
+
+(e) Somente inverter o bit mais significativo de a. 
+Resp:
+int main(void)
+{
+int saida,a;
+saida <= a ^ "10000000";
+}
+
+(f) Inverter o nibble mais significativo de a, e setar o nibble menos significativo de a.
+Resp:
+int main(void)
+{
+int saida,a;
+saida <= a ^ "11110000";
+saida <= a || "00001111";
+}
 
 2. Considerando a placa Launchpad do MSP430, escreva o código em C para piscar os dois LEDs ininterruptamente.
 
