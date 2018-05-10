@@ -121,6 +121,107 @@ int main(void)
 }
 
 5.Repita as questões 2 a 5 usando a interrupção do Timer A para acender ou apagar os LEDs.
+Resp:
+
+#include "msp430g2231.h"  
+void main(void)
+{
+  WDTCTL = WDTPW + WDTHOLD;       
+  CCTL0 = CCIE;                            
+  TACTL = TASSEL_2 + MC_1 + ID_3;          
+  CCR0 =  1;                       
+  P1OUT &= 0x00;               
+  P1DIR &= 0x00;               
+  P1DIR |= BIT0 + BIT6;            
+  _BIS_SR(CPUOFF + GIE);           
+  while(1)                                                                                
+  {}
+} 
+#pragma vector=TIMERA0_VECTOR 
+__interrupt void Timer_A (void) 
+{   
+   long int i;
+   long int x;
+   x = 10;
+   x = 65*x;
+   for(i=0;i<x;i++);
+   P1OUT ^= BIT0;                                                                                 
+}
+_____________________________________________________________
+#include "msp430g2231.h"  
+void main(void)
+{
+  WDTCTL = WDTPW + WDTHOLD;       
+  CCTL0 = CCIE;                            
+  TACTL = TASSEL_2 + MC_1 + ID_3;          
+  CCR0 =  1;                       
+  P1OUT &= 0x00;               
+  P1DIR &= 0x00;               
+  P1DIR |= BIT0 + BIT6;            
+  _BIS_SR(CPUOFF + GIE);           
+  while(1)                                                                                
+  {}
+} 
+#pragma vector=TIMERA0_VECTOR 
+__interrupt void Timer_A (void) 
+{   
+   long int i;
+   long int x;
+   x = 50;
+   x = 65*x;
+   for(i=0;i<x;i++);
+   P1OUT ^= BIT0;                                                                                 
+}
+_________________________________________________________________________
+#include "msp430g2231.h"  
+void main(void)
+{
+  WDTCTL = WDTPW + WDTHOLD;       
+  CCTL0 = CCIE;                            
+  TACTL = TASSEL_2 + MC_1 + ID_3;          
+  CCR0 =  1;                       
+  P1OUT &= 0x00;               
+  P1DIR &= 0x00;               
+  P1DIR |= BIT0 + BIT6;            
+  _BIS_SR(CPUOFF + GIE);           
+  while(1)                                                                                
+  {}
+} 
+#pragma vector=TIMERA0_VECTOR 
+__interrupt void Timer_A (void) 
+{   
+   long int i;
+   long int x;
+   x = 1000;
+   x = 65*x;
+   for(i=0;i<x;i++);
+   P1OUT ^= BIT0;                                                                                 
+}
+__________________________________________________________________________
+#include "msp430g2231.h"  
+void main(void)
+{
+  WDTCTL = WDTPW + WDTHOLD;       
+  CCTL0 = CCIE;                            
+  TACTL = TASSEL_2 + MC_1 + ID_3;          
+  CCR0 =  1;                       
+  P1OUT &= 0x00;               
+  P1DIR &= 0x00;               
+  P1DIR |= BIT0 + BIT6;            
+  _BIS_SR(CPUOFF + GIE);           
+  while(1)                                                                                
+  {}
+} 
+#pragma vector=TIMERA0_VECTOR 
+__interrupt void Timer_A (void) 
+{   
+   long int i;
+   long int x;
+   x = 2000;
+   x = 65*x;
+   for(i=0;i<x;i++);
+   P1OUT ^= BIT0;                                                                                 
+}
 
 6.Defina a função void paralelo_para_serial(void); que lê o byte de entrada via porta P1 e transmite os bits serialmente via pino P2.0. Comece com um bit em nivel alto, depois os bits na ordem P1.0 - P1.1 - … - P1.7 e termine com um bit em nível baixo. Considere um período de 1 ms entre os bits.
 
