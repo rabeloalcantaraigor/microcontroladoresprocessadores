@@ -1,0 +1,169 @@
+#include <msp430g2553.h>
+//LCD control pin definitions
+#define DATA_REG P1OUT=BIT5 		//SET RS HIGH (Registro de dados)
+#define INST_REG P1OUT = (~BIT5) 		//SET RS LOW (Registro de instruções)
+#define ENABLE_PIN_HIGH P2OUT |= BIT0	//SET ENABLE HIGH
+#define ENABLE_PIN_LOW P2OUT &= (~BIT0)	//SET ENABLE LOW
+
+//VARIABLE DECLARATION
+
+int counter = 0;
+char char_counter[5];
+
+//Implementação da função itoa (converte valores em strings para mostrar no LCD)
+
+char *itoa(int from, char to[])
+{
+       char const digit[] = "0123456789";
+       char* p = to;
+       int shifter;
+	
+	if(from < 0 ){
+		*p++ = '-';
+		from *= -1;
+}
+shifter = from;
+
+do{
+	++p;
+	shifter = shifter/10;
+}while(shifter);
+
+*p = '\0';
+
+do{
+	*--p = digit[(from % 10)];
+	from = from / 10;
+} while(from);
+
+ return to;
+}
+void configure_clocks()
+{
+       WDTCTL = WDTPW + WDTHOLD; //PARAR WATCHDOG PARA EVITAR A REINICIALIZAÇÃO DO TEMPO
+       DCOCTL = CALDCO_1MHZ;          //DCO = 1MHZ
+       BCSCTL1 = CALBC1_1MHZ;           //BC1 = 1 MHZ
+       BCSCTL1 = 0x00;		            //0
+       BCSCTL3  = 0x00;		            //0
+ }
+
+  void delay_us(unsigned int us)
+  {
+	__delay_cycles(1);			//FREQUENCIA 1MHZ = PERIODO 1us
+	us--;
+  }
+  void delay_ms(unsigned int ms)
+  {
+   	while(ms)
+		{
+		__delay_cycles(1000);	//FREQUENCIA DE 1 MHZ = PERIODO DE 1 us => (1 ms = 1000 us)
+		ms--;
+		}
+   }
+void data_write(void)
+	{
+		ENABLE_PIN_HIGH;
+		delay_ms(5);
+		ENABLE_PIN_LOW;
+	}
+void send_data(unsigned char data)
+{
+	unsigned char higher_nibble = 0x3c & (data >> 2);
+	unsigned char lower_nibble = 0x3c & (data <<  2);
+	
+	delay_us(200);
+	DATA_REG;
+	
+	P2OUT = (P2OUT & 0xc3) | (higher_nibble); 	//ENVIAR PRIMEIRO 4 bits
+	data_write();
+	P2OUT = (P2OUT & 0xc3) | (lower_nibble);	//ENVIAR POR ÚLTIMO 4 bits
+	data_write();
+}
+
+void send_string(char *s)
+{
+	while(*s)
+	{
+		send_data(*s);
+		s++;
+	}
+}
+
+void send_command(unsigned char cmd)
+{
+	unsigned char higher_nibble = 0x3C & (cmd >> 2);
+	unsigned char lower_nibble = 0x3C  & (cmd << 2);
+
+	INST_REG;
+	P2OUT = (P2OUT & 0xC3) | (higher_nibble); //ENVIAR PRIMEIRO 4 bits
+	data_write();
+
+	P2OUT = (P2OUT & 0xC3) | (lower_nibble); //ENVIAR POR ÚLTIMO 4 bits
+	data_write();
+}
+void lcd_init(void)
+{
+	P1DIR = 0x20;	//Set P1.5 COMO SAÍDA
+        P1OUT = 0x00;	//Set P1 SAÍDAS BAIXAS
+ 	P2DIR = 0x3D;	//Set P2.0 P2.2 P2.3 P2.4 P2.5 COMO SAIDA
+	P2OUT = 0x00;	//Set P2 SAÍDAS BAIXAS
+
+	delay_ms(15);
+	send_command(0x33); //CÓDIGO DE INICIALIZAÇÃO
+	
+	delay_ms(200);
+	send_command(0x32); //CÓDIGO DE INICIALIZAÇÃO
+
+	delay_ms(40);
+	send_command(0x28); //2 linhas e 5x7 matriz(4 bit mode)
+	
+	delay_ms(40);
+	send_command(0x0E); //Display on, cursor on
+
+	delay_ms(40);
+	send_command(0x01); //Clear display screen
+
+	delay_ms(40);
+	send_command(0x06); //INCREMENTAR cursor (shift cursor para a direita)
+
+	delay_ms(40);
+	send_command(0x80); //Definir o cursor para começar na 1ª linha
+        }
+	int main(void)
+	{
+		configure_clocks();		//start clock
+		lcd_init();			//start LCD
+		
+		send_string("TACOMETRO");	//ESCREVER NA PRIMEIRA LINHA
+		send_command(0xC0);		//DEFINIR O CURSOR PARA O INÍCIO DA SEGUNDA LINHA
+		send_string("DIGITAL");	//ESCREVER NA SEGUNDA LINHA
+		send_command(0x0C);
+		
+		P1REN |= BIT3;			//Enable pull-up/down resistor in P1.3
+		P1OUT |= BIT3;			//SELECIONAR pull-up MODO in P1.3
+		P1IE = BIT3;			//Enable interrupt in P1.3
+		P1IES = BIT3;			//Hi-Lo edge in P1.3 
+		P1IFG &= ~BIT3;		//Clear interrupt flag in P1.3
+		
+		__bis_SR_register(GIE);		//Enable global interrupt
+
+		while(1)9
+		{}
+	}
+
+        #pragma vector = PORT1_VECTOR
+        __interrupt void Port_1(void){
+	 counter++;				//Contador incremental do botão pressionado
+	 itoa(counter, char_counter);		//Converter contagem de inteiros para char char_count
+	 send_command(0x01);		//LIMPAR A TELA
+	 send_command(0x80);		//Definir o cursor para começar a primeira linha
+	 send_string("Contador btn:");	//ESCREVER NA PRIMEIRA LINHA
+	 send_command(0xC0);		//Definir o cursor para o início da segunda linha
+	 send_string("Pressionado: ");	//Escreva na segunda linha
+	 send_string(char_counter);		//Escreva char_counter na segunda linha
+	 send_string(" x");			//Escreva na segunda linha
+	 send_command(0x0C);		//Exibir ligado, cursor desligado
+	 __delay_cycles(50000);		//Delay
+	 P1IFG &= ~BIT3;			//Clear interrupt flag in P1.3
+        }
+       
