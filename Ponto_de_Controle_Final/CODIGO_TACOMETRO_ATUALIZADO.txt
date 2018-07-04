@@ -1,0 +1,200 @@
+
+#include "msp430g2553.h"
+
+// LCD control pins definitions
+#define DATA_REG P1OUT = BIT5
+#define INST_REG P1OUT = (~BIT5)
+#define ENABLE_PIN_HIGH P2OUT |= BIT0
+#define ENABLE_PIN_LOW P2OUT &= (~BIT0)
+  
+//Variable declaration
+int turn_counter = 0;
+int miliseconds = 0;
+int rpm = 0;
+char char_rpm[5];
+char char_miliseconds[5];
+
+// Implementation of itoa function(convert values in strings to show on LCD)
+char *itoa(int from, char to[])
+{
+  char const digit[] = "0123456789";
+  char* p = to;
+  int shifter;
+  
+  if(from < 0){
+    *p++ = '-';
+    from *= -1;
+  }
+  
+  shifter = from;
+  
+  do{
+    ++p;
+    shifter = shifter / 10;
+  }while(shifter);
+  
+  *p='\0';
+  
+  do{
+    *--p = digit[(from % 10)];
+    from = from / 10;
+  }while(from);
+  
+  return to;
+}
+
+void configure_clocks()
+{
+  WDTCTL = WDTPW + WDTHOLD;
+  DCOCTL = CALDCO_1MHZ;
+  BCSCTL1 = CALBC1_1MHZ;
+  BCSCTL2 = 0x00;
+  BCSCTL3 = 0x00;
+}
+void delay_us(unsigned int us)
+{
+  while(us)
+  {
+  __delay_cycles(1);
+  us--;
+  }
+}
+
+void delay_ms(unsigned int ms)
+{
+  while(ms)
+  {
+    __delay_cycles(1000);
+    ms--;
+  }
+}
+
+void data_write(void)
+{
+  ENABLE_PIN_HIGH;
+  delay_ms(5);
+  ENABLE_PIN_LOW;
+}
+void send_data(unsigned char data)
+{
+  unsigned char higher_nibble = 0x3c & (data >> 2);
+  unsigned char lower_nibble = 0x3c & (data << 2);
+  
+  delay_us(200);
+  
+  DATA_REG;
+  P2OUT = (P2OUT & 0xc3)|(higher_nibble);
+  data_write();
+  P2OUT = (P2OUT & 0xc3)|(lower_nibble);
+  data_write();
+}
+void send_string(char *s)
+{
+  while(*s)
+  {
+    send_data(*s);
+    s++;
+  }
+}
+void send_command(unsigned char cmd)
+{
+  unsigned char higher_nibble = 0x3C & (cmd >> 2);
+  unsigned char lower_nibble = 0x3C & (cmd << 2);
+  
+  INST_REG;
+  
+  P2OUT = (P2OUT & 0xC3)|(higher_nibble);
+  data_write();
+  
+  P2OUT = (P2OUT & 0xC3)|(lower_nibble);
+  data_write();
+}
+void lcd_init(void)
+{
+  P1DIR = 0x20;
+  P1OUT = 0x00;
+  P2DIR = 0x3D;
+  P2OUT = 0x00;
+  
+  delay_ms(15);
+  send_command(0x33);
+  
+  delay_us(200);
+  send_command(0x32);
+  
+  delay_us(40);
+  send_command(0x28);
+  
+  delay_us(40);
+  send_command(0x0E);
+  
+  delay_us(40);
+  send_command(0x01);
+  
+  delay_us(40);
+  send_command(0x06);
+  
+  delay_us(40);
+  send_command(0x80);
+}
+void calc_rpm(void){
+  rpm=1200000/miliseconds;
+  itoa(miliseconds,char_miliseconds);
+  itoa(rpm, char_rpm);
+  send_command(0xC0);
+  send_string("Vel=");
+  send_string(char_rpm);
+  send_string(" RPM");
+  send_command(0x0C);
+}
+int main(void)
+{
+  configure_clocks();
+  
+  lcd_init();
+  send_command(0x80);
+  send_string("TACOMETRO");
+   
+  P1REN |= 0X08;
+  P1OUT |= 0X08;
+  P1IE |= 0X18;
+  P1IES |= 0x08;
+  P1IES &= ~0x10;
+  P1IFG &= ~0x18;
+  
+  // TIMER A0
+  TA0CTL = TASSEL_2 + MC_1 + ID_0;
+  
+  TA0CCTL0 |= CCIE;
+  TA0CCR0 = 1000-1;
+  
+  __bis_SR_register(GIE);
+  
+  miliseconds = 0;
+  turn_counter = 0;
+  
+  while(1){
+  } 
+}
+
+#pragma vector=TIMER0_A0_VECTOR
+__interrupt void Timer_A(void)
+{
+  miliseconds++;
+}
+
+#pragma vector = PORT1_VECTOR
+__interrupt void Port_1(void)
+{ 
+      if(turn_counter < 179){
+        turn_counter++;
+      }
+     else{
+       calc_rpm();
+       turn_counter=0;
+       TA0CTL |= TACLR;
+       miliseconds = 0;
+     }
+  P1IFG &= ~0x18;
+  
+}
