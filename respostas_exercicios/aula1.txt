@@ -1,0 +1,21 @@
+
+
+    1.O que são sistemas embarcados?
+Resp:É um sistema microprocessado no qual o computador é completamente encapsulado ou dedicado ao dispositivo ou sistema que ele controla. Realiza um conjunto de tarefas pré-definidas, geralmente com requisitos específicos.
+
+    2.O que são sistemas microprocesssados?
+Resp:Podem ser basicamente dois tipos:
+1- Multiprocessamento simétrico(SMP): os processadores compartilham a mesma memória embora possam ter caches separados. O sistema operacional deve estar preparado para trabalhar com coerência de caches e, principalmente, evitar condições de corrida na memória principal.
+2- Acesso não unirforme a memória(NUMA): a cada processador é associado um banco de memória. Nesse caso, o sistema operacional trata cada banco separadamente, pois cada banco tem um custo de acesso diferente, dependendo de qual o processador a que está associado e onde está sendo executado o processo que tenta acessar a memória.
+
+    3.Apresente aplicações de sistemas embarcados: (a) para a indústria automotiva; (b) para eletrodomésticos; (c) para automação industrial.
+Resp:(a)Alarmes, painel de entretenimento, sistemas de GPS e navegação, redes de comunicação embarcada como CAN e LIN.
+(b)Controle remoto, micro-ondas, roteadores, video game, impressoras.
+(c)Controlador single loop/Mult loop, CLP/PLC(controlador lógico programável), soft PLC, PAC(controlador programável de automação), analisadores industriais, robótica industrial.
+
+    4.Cite arquiteturas possíveis e as diferenças entre elas.
+Resp:(1)Arquitetura de Von Newmann: os barramentos de dados e endereços são compartilhados entre memórias de programas e memórias de dados na comunicação com CPV. Nesse tipo de arquitetura, quando a CPV está acessando a memória de programa não pode acessar a memória de dados, porque usa os mesmos barramentos para as duas memórias. Arquitetura CISC.
+(2)Arquitetura Harvard: É uma arquitetura de computador que se distingue das outras por possuir duas memórias diferentes e independentes em termos de barramento e ligação ao processador. É utilizada nos microcontroladores PIC, tem como principal característica acessar a memória de dados separadamente da memória de programa. Separação de barramentos de dados das memórias onde estão as instruções de programa e das memórias de dados, permitindos que o processador para acessar as duas simultaneamente, obtendo um desempenho melhor que a de Von Newman. A principal vantagem é que a leitura de instruções e de alguns tipos de operandos pode ser feita ao mesmo tempo em que a execução das instruções. Arquitetura RISC.
+
+    5.Por que usamos o MSP430 na disciplina, ao invés de outro microcontrolador?
+Resp: Porque possui aplicações de baixo consumo. Processador, barramento de dados e de memória e registradores de 16 bits. CPU pequena e eficiente, muitos registradores. Processador do MSP430 permite aritmética diretamente com valores de memórias e possui uma arquitetura RISC. Esses pontos são positivos ao comparar com outros microcontroladores. E também tem um custo benefício pequeno.
