@@ -1,0 +1,584 @@
+Para cada questão, tecle algumas funções sobre ele e / ou sub-rotinas na Assembléia do MSP430. Reaproveite functions e sub-rotinas de uma questão em outra, se assim desejar. Leve em consideração que as sub-rotinas são utilizadas em um código maior, portanto, utilizar os registradores R4 a R11. As instruções da Assembléia da linguagem MSP430 estão em consonância com o final deste texto.
+
+1. (a) Escreva uma função em C que calcula uma raiz quadrada 'x' de uma variável 'S' do tipo float, utilizando o seguinte algoritmo: após 'n + 1' iterações, uma raiz quadrada de 'S' é dada por
+
+	Unsigned int Raiz_Quadrada (não assinado int S)
+
+	{
+	    float x [1000];
+	    flutuar a;
+        int n;
+
+        n == 0;
+	    x [0] = S / 2;
+
+
+        para (n = 0; n <1000; n ++) {
+
+                x [n + 1] = (x [n] + (S / x [n]) / 2;
+        }
+        a = x [1000];
+        return a;
+	}
+
+(b) Escrever um resumo e uma referência. Assembléia do MSP430. Uma variável 'S' é registrada pelo registrador R15, e uma raiz quadrada de 'S' (ou seja, uma variável 'x') é registrada pelo R15 também.
+
+Raiz_Quadrada:
+        
+	MOV.W numero, R6; VALOR DE ENTRADA
+        MOV.W # 0, R10                 
+        MOV.W # 0, R14                 
+        MOV.W # 20, R15                 
+        MOV.W R6, R7
+        MOV.W R6, R8
+        MOV.W R6, R9
+        RRA.w R8
+        Divisao JMP
+
+divisao:
+        ADD.W # 1, R14
+        SUB.W R8, R9
+        ADD.W # 1, R10
+        CMP R9, R8
+        jl divisao
+        jeq final_divisao
+        jne fim
+final_divisao:
+        ADD.W # 1, R10
+        
+fim:    
+        MOV.W R8, R11
+        ADD.W R10, R11
+        RRA.W R11
+        MOV.W R11, R8
+        CMP # 3, R14
+        jne divisao
+	MOV.W R8, R15
+	RET
+
+2. (a) Escreva uma função em C que calcule 'x' elevado à 'N'-ésima potência, seguindo o seguinte protótipo: 
+
+	int Potencia (int x, int N)
+	{
+        if (N <= 1) {
+        return x;
+		}
+        if (N == 0) {
+        return 0;
+        }
+		return x * Potencia (x, - N);
+	}
+
+(b) Escrever um resumo e uma referência. Assembléia do MSP430. 'e' é '' '' '' e 'n' são emoldurados por registradores R15 e R14, respectivamente, e são.
+
+funcPOTENCIA:
+         
+         MOV.W # 5, R15; VALOR DE ENTRADA
+         MOV.W # 4, R14; VALOR DE ENTRADA
+         MOV.W # 1, R7
+         MOV.W R15, R10
+         MOV.W # 1, R9
+         MOV.W R15, R5
+         MOV.W R5, R8
+         MOV.W R14, R6
+
+MULTIPLICACAO:
+         CMP R7, R5
+         JEQ POTENCIA
+         ADD.W # 1, R7
+         ADD.W R8, R10
+         jmp MULTIPLICACAO
+
+POTENCIA:
+        
+        MOV.W R10, R5
+        MOV.W # 0, R10
+        ADD.W # 1, R9
+        CMP R14, R9
+        MOV.W # 0, R7
+        JNE MULTIPLICACAO
+        MOV.W R5, R15
+	RET
+
+3. Escreva uma sub-rotina na Assembléia do MSP430 que calcula uma divisão de 'a' por 'b', onde 'a', 'b' e o valor de saída são inteiros de 16 bits. 's' e 'b' são classificados através dos registradores R15 e R14, respectivamente, devem ser colocados através do registrador R15.
+	
+	MOV.W # 8, R6; valores de entrada
+        MOV.W # 3, R8; valores de entrada
+funcdivisao:
+        MOV.W # 0, R10                 
+        MOV.W # 0, R14     
+        MOV.W # 8, R6
+        MOV.W R6, R7
+        MOV.W R6, R9
+        Divisao JMP
+
+divisao:
+        ADD.W # 1, R14
+        SUB.W R8, R9
+        ADD.W # 1, R10
+        CMP R9, R8
+        jl divisao
+        jeq final_divisao
+        jne fim
+final_divisao:
+        ADD.W # 1, R10
+        
+fim:    
+        MOV.W R10, R15
+	RET
+4. Escrever uma sub-rotina na Assembléia do MSP430 que calcula o resto da divisão de 'a' por 'b', onde 'a', 'b' e o valor de saída são inteiros de 16 bits. 's' e 'b' são classificados através dos registradores R15 e R14, respectivamente, devem ser colocados através do registrador R15.
+
+        MOV.W # 8, R6; valores de entrada
+        MOV.W # 5, R8; valores de entrada
+        
+funcresto:
+        MOV.W # 0, R10                 
+        MOV.W # 0, R14     
+        MOV.W # 8, R6
+        MOV.W R6, R7
+        MOV.W R6, R9
+        Divisao JMP
+
+divisao:
+        ADD.W # 1, R14
+        SUB.W R8, R9
+        ADD.W # 1, R10
+        CMP R9, R8
+        jl divisao
+        jeq final_divisao
+        jne fim
+final_divisao:
+        ADD.W # 1, R10
+        MOV.W # 0, R9
+        
+fim:    
+        MOV.W R9, R15
+	RET
+5. (a) Escreva uma palavra em C que indica uma primalidade de uma variável, ou seja, sem sinal, retornando o valor 1 vez do número para primo, e 0, caso contrário. Siga o seguinte protótipo:
+
+	int Primalidade (unsigned int x)
+	{int i;
+	    int m;
+	    para (i = 2; i <10; i ++) {
+        if (x% i == 0) {
+            m ++;
+        }
+	    }
+	    if (m == 0) {
+        return 1;
+	    }
+	    if (x <10 && m == 1) {
+            return 1;
+	    }
+	    if (x <10 && m> 1) {
+	    return 0;}
+	    if (m! = 0 && x> = 10) {
+        return 0;
+	    }
+	}
+
+(b) Escrever um resumo e uma referência. Assembléia do MSP430. Uma variável de entrada é registrada pelo registrador R15, e o valor de saída também.
+
+Primalidade:
+
+comeco: MOV.W # 2, R8 
+        MOV.W # 0, R5
+        MOV.W # 1, R13
+trocanumero:
+        MOV.W # 8, R9; valores de entrada
+        ADD.W # 1, R8     
+        MOV.W # 0, R14
+        MOV.W # 1, R10
+        CMP # 1, R9
+        JEQ voumum
+        CMP # 3, R9
+        JEQ voumum
+        CMP # 5, R9
+        JEQ voumum
+        CMP # 7, R9
+        JEQ voumum
+divisao:
+        ADD.W # 1, R14
+        SUB.W R8, R9
+        ADD.W # 1, R10
+        CMP R9, R8
+        jl divisao
+        jeq final_divisao
+        jne fim
+final_divisao:
+        ADD.W # 1, R10
+        MOV.W # 0, R9       
+fim:    
+        MOV.W R9, R15
+        CMP # 0, R15
+        JEQ somaum
+        CMP # 9, R13
+        JEQ acabou
+        INC.W R13
+        JMP trocanumero
+        
+somaum:
+        ADD.W # 1, R13
+        ADD.W # 1, R5
+        CMP.W # 9, R13
+        JEQ acabou
+        JMP trocanumero
+acabou:
+        CMP # 0, R5
+        JEQ voumum
+        JMP retornazero
+retornazero:
+        MOV.W # 0, R15
+        jmp VERYEND
+retornoum:
+        MOV.W # 1, R15
+MUITO:
+	RET
+6. Escreva uma função em C que calcula o duplo fatorial de n, representado por n !!. Se n para ímpar, n !! = 1 * 3 * 5 * ... * n, e se n para par, n !! = 2 * 4 * 6 * ... * n. Por exemplo, 9 !! = 1 * 3 * 5 * 7 * 9 = 945 e 10 !! = 2 * 4 * 6 * 8 * 10 = 3840. Além disso, 0 !! = 1 !! = 1
+O protótipo da função é:
+
+	longa sem assinatura longa DuploFatorial (unsigned long long n)
+	{
+	    longa sem assinatura i longa;
+	    longa sem assinatura j longa;
+	    sem longa e longa k;
+	    longa sem assinatura longa l;
+
+	    k = n;
+	    l = n;
+
+	if (n == 0) {
+	return 1;
+	}
+	    para (i = 1; n> 1; n -) {
+        if (n% 2 == 0) {
+            i * = n;
+        }
+        }
+
+        para (j = 1; k> 1; k -) {
+        if (k% 2 == 1) {
+            j * = k;
+        }
+        }
+        if (l% 2 == 1) {
+            return j;
+        }
+        if (l% 2 == 0) {
+            return i;
+        }
+	}
+
+7. (a) Escreva uma função em Cálculo da função exponencial da seguinte forma:
+	
+int ExpTaylor (double x) {
+    int i, j, z, numero;
+    dupla recepção;
+    duplo b;
+    xelv duplo [20];
+    nfat duplo [20];
+    b = x;
+    numero = 1;
+    recebe = 0;
+    xelv [0] = 1;
+    xelv [1] = x;
+    nfat [0] = 1;
+    para (i = 0; i <10; i ++) {
+        x = x * b;
+        xelv [i + 2] = x;
+    }
+  para (j = 1; j <= 9; ++ j)
+        {
+            numero * = j;
+            nfat [j] = numero;
+        }
+  para (z = 0; z <10; z ++) {
+    recebe = recebe + (xelv [z] / nfat [z]);
+  }
+  return recebe;
+}
+
+(b) Escrever uma sub-rotina equivalente à Assembly of MSP430, mas considere que os valores de entrada e saída são inteiros de 16 bits. Uma variável de entrada é registrada pelo registrador R15, e o valor de saída também.
+
+FUNCEXPONENCIAL:
+
+            MOV.W # 2, R6; entrada
+            MOV.W # 1, R12
+            MOV.W # 1, R11
+exponencial:            
+            CMP # 5, R12
+            JEQ acaba
+            chamar #funcfatorial
+            MOV.W # 2, R6; entrada
+            MOV.W # 1, R7
+            MOV.W # 0, R9
+            ligue para #funcPOTENCIA
+            MOV.W # 0, R10
+            ligue para #divisao
+            ADD.W R11, R13
+            MOV.W R13, R11
+            INC.W R12
+            JMP exponencial
+acaba: 
+	  MOV.W R13, R15
+          RET
+funcfatorial:
+         
+         MOV.W R12, R15
+         MOV.W # 1, R7
+         MOV.W R15, R10
+         MOV.W # 1, R9
+         MOV.W R15, R5
+         MOV.W R15, R8
+         DEC.W R5
+
+         CMP # 0, R15
+         JEQ igual
+         CMP # 1, R15
+         JEQ igual
+         CMP # 2, R15
+         JEQ igualdoisf
+         JMP MULTIPLICACAOf
+igualumf:
+          MOV.W # 1, R4
+          RET
+igualdoisf:
+          MOV.W # 2, R4
+          RET
+MULTIPLICACAOf:
+         CMP R7, R5
+         JEQ POTENCIAf
+         ADD.W # 1, R7
+         ADD.W R8, R10
+         jmp MULTIPLICACAOf
+POTENCIAf:
+        DEC.W R5
+        CMP # 1, R5
+        JEQ FIMf
+        MOV.W # 1, R7
+        MOV.W R10, R8
+        JNE MULTIPLICACAOf
+FIMf:
+        MOV.W R10, R4
+        RET
+funcPOTENCIA: 
+         MOV.W R6, R15; 
+         MOV.W R12, R14; 
+         MOV.W # 1, R7
+         MOV.W R6, R10
+         MOV.W # 1, R9
+         MOV.W R15, R5
+         MOV.W R5, R8
+         MOV.W R14, R6
+         CMP # 1, R12
+         JNE MULTIPLICACAO
+         RET        
+MULTIPLICACAO:
+         CMP R7, R5
+         JEQ POTENCIA
+         ADD.W # 1, R7
+         ADD.W R8, R10
+         jmp MULTIPLICACAO
+POTENCIA:     
+        MOV.W R10, R5
+        MOV.W # 0, R10
+        ADD.W # 1, R9
+        CMP R14, R9
+        MOV.W # 0, R7
+        JNE MULTIPLICACAO
+        MOV.W R5, R15
+        RET
+divisao:
+        SUB.W R4, R15
+        ADD.W # 1, R10
+        CMP R15, R4
+        jl divisao
+        jeq final_divisao
+        Jne Fimno
+final_divisao:
+        ADD.W # 1, R10
+fimno:
+      MOV.W R10, R13
+        RET
+
+8. Escreva uma sub-rotina na Assembly do MSP430 que indica se é um vetor de ordem decrescente. Por exemplo:
+[5 4 3 2 1] e [90 23 20 10] são ordenados de forma decrescente.
+[1 2 3 4 5] e [1 2 3 2] não estão.
+O primeiro endereço do vetor é reservado pelo registrador R15, eo tamanho do vetor é selecionado pelo registrador R14. A saída must be enabled in registrer R15, valing 1 when the vector if ordenated from form decrescente, and valing 0 in caso contrário.
+
+ehdecrescente:
+
+        MOV.W # 4, R5; Entrada tamanho do vetor      
+        MOV.W # 6,0 (R15); entrada numeros do vetor
+        MOV.W # 5,2 (R15); 
+        MOV.W # 5,4 (R15); 
+        MOV.W # 5,6 (R15); 
+        MOV.W # 2,8 (R15); 
+        MOV.W # 1,10 (R15);
+        MOV.W # 1, R6
+        MOV.W # 1, R7    
+        CMP R6, R5
+        JEQ fim
+        INC.W R6
+        CMP 2 (R15), 0 (R15)
+        JL fim
+        INC.W R7
+        CMP R6, R5
+        JEQ fim
+        INC.W R6
+        CMP 4 (R15), 2 (R15)
+        JL fim
+        INC.W R7
+        CMP R6, R5
+        JEQ fim
+        INC.W R6
+        CMP 6 (R15), 4 (R15)
+        JL fim
+        INC.W R7
+        CMP R6, R5
+        JEQ fim
+        INC.W R6
+        CMP 8 (R4), 6 (R4)
+        JL fim
+        INC.W R7
+        CMP R6, R5
+        JEQ fim
+        INC.W R6
+        CMP 10 (R4), 8 (R4)
+        JL fim
+        INC.W R7
+fim:
+      CMP R7, R5
+      JEQ voumum
+      MOV.W # 0, R15
+      Finalmesmo JMP
+retornoum:
+      MOV # 1, R15
+finalmesmo:
+              RET
+	      
+9. Escreva uma sub-rotina na Assembléia do MSP430 que calcula o produto escalar de dois vetores, 'a' e 'b':
+
+PRODUTOESCALAR:
+
+        MOV.W # 4,0 (R12); entrada numeros do vetor A
+        MOV.W # 3,2 (R12); 
+        MOV.W # 2,4 (R12); 
+        MOV.W # 1,6 (R12); 
+    
+        MOV.W # 1,0 (R14); entrada numeros do vetor B
+        MOV.W # 1,2 (R14); 
+        MOV.W # 1,4 (R14); 
+        MOV.W # 1,6 (R14); 
+        
+       MOV.W 0 (R12), R8
+       MOV.W 0 (R12), R10
+       MOV.W 0 (R14), R5
+       MOV.W # 1, R7
+       ligue para #MULTIPLICACAO
+       MOV.W R10, 0 (R13)
+       
+       MOV.W 2 (R12), R8
+       MOV.W 2 (R12), R10
+       MOV.W 2 (R14), R5
+       MOV.W # 1, R7
+       ligue para #MULTIPLICACAO
+       MOV.W R10, 2 (R13)
+       
+       MOV.W 4 (R12), R8
+       MOV.W 4 (R12), R10
+       MOV.W 4 (R14), R5
+       MOV.W # 1, R7
+       ligue para #MULTIPLICACAO
+       MOV.W R10, 4 (R13)
+       
+       MOV.W 6 (R12), R8
+       MOV.W 6 (R12), R10
+       MOV.W 6 (R14), R5
+       MOV.W # 1, R7
+       ligue para #MULTIPLICACAO
+       MOV.W R10, 6 (R13)
+       
+       ADD 0 (R13), 2 (R13)
+       ADICIONAR 2 (R13), 4 (R13)
+       ADD 4 (R13), 6 (R13)
+       JMP acaba
+       
+MULTIPLICACAO:
+         CMP R7, R5
+         JEQ amult
+         ADD.W # 1, R7
+         ADD.W R8, R10
+         jmp MULTIPLICACAO
+amult:
+          RET
+          
+acaba: 
+          MOV.W 6 (R13), R15
+          
+          RET
+	  
+O primeiro endereço do vetor deve ser registrado através do registrador R15, o primeiro endereço do vetor deve ser registrado através do registrador R14, eo tamanho do vetor deve ser registrado pelo registrador R13. A saída deve ser feita no registrador R15.
+
+10. (a) Escreva uma função em C que indica se um vetor é palíndromo. Por exemplo:
+	[1 2 3 2 1] e [0 10 20 20 10 0] são palíndromos.
+	[5 4 3 2 1] e [1 2 3 2] não são.
+Se o vetor para palíndromo, retornou o valor 1. Caso contrário, retornou o valor 0. O protótipo da função é:
+
+    int Palindromo (int vetor [], int tamanho) {
+    int i, j;
+    int m;
+    int confere;
+    int normal [tamanho];
+    int inverso [tamanho];
+    confere = 0;
+    m = tamanho - 1;
+    para (i = 0; i <tamanho; i ++) {
+    normal [i] = vetor [i];
+    inverso [mi] = vetor [i];
+    }
+    para (j = 0; j <size; j ++) {
+    if (normal [j] == inverso [j]) {
+        confere ++;
+    }
+}
+    if (confere == tamanho) {
+        return 1;
+    } mais retorna 0;
+}
+
+(b) Escrever um resumo e uma referência. Assembléia do MSP430. O endereço do vetor de entrada é dado pelo registrador R15, o tamanho do vetor é dado pelo registrador R14, e o resultado é dado pelo registrador R15.
+
+PALINDROMO:
+
+        MOV.W # 4,0 (R12); entrada numeros do vetor A
+        MOV.W # 2,2 (R12); 
+        MOV.W # 2,4 (R12); 
+        MOV.W # 4,6 (R12); 
+    
+       MOV 0 (R12), 6 (R15)
+       MOV 2 (R12), 4 (R15)
+       MOV 4 (R12), 2 (R15)
+       MOV 6 (R12), 0 (R15)
+       
+       CMP 0 (R12), 0 (R15)
+       JNE naoeh
+       
+
+       CMP 2 (R12), 2 (R15)
+       JNE naoeh
+       
+
+       CMP 4 (R12), 4 (R15)
+       JNE naoeh
+       
+
+       CMP 6 (R12), 6 (R15)
+       JNE naoeh
+       MOV.W # 1, R15
+       JMP acaba
+       
+naoeh:
+       MOV # 0, R15
+acaba:
+       RET
